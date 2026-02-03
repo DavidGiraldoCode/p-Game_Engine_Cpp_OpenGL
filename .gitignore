@@ -1,0 +1,83 @@
+# =========================
+# OS / Editor
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Visual Studio
+# =========================
+.vs/
+*.user
+*.userosscache
+*.suo
+*.VC.db
+*.VC.opendb
+
+# MSVC build artifacts
+*.pdb
+*.ilk
+*.ipdb
+*.iobj
+*.idb
+*.tlog
+*.log
+
+# =========================
+# Build output (root-level)
+# =========================
+/build/
+/out/
+/bin/
+/obj/
+/x64/
+/x86/
+/Debug/
+/Release/
+
+# =========================
+# CMake (root project)
+# =========================
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+install_manifest.txt
+*.cmake
+
+# =========================
+# Third-party libraries
+# =========================
+
+# GLEW: ignore build artifacts, keep sources & headers
+/thirdparty/glew/build/
+/thirdparty/glew/lib/
+/thirdparty/glew/bin/
+
+# GLFW: sources are vendored, but ignore local builds
+/thirdparty/glfw-3.4/build/
+/thirdparty/glfw-3.4/out/
+/thirdparty/glfw-3.4/bin/
+
+# =========================
+# Executables & Libraries
+# =========================
+*.exe
+*.dll
+*.lib
+*.exp
+*.a
+*.so
+
+# =========================
+# OpenGL / Shader build artifacts
+# =========================
+*.spv
+*.glslc
+*.cache
+
+# =========================
+# Temporary files
+# =========================
+*.tmp
+*.bak
+*.swp
