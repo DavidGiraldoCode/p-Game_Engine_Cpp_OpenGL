@@ -4,6 +4,15 @@
 #include <GLFW/glfw3.h>
 #include <string>
 
+// TODO
+/*
+void keyCallback(GLFWwindow* window, int key, int scanCode, int action, int mods)
+{
+    switch(key)
+
+}
+*/
+
 int main(int argc, char* argv[])
 {
     std::cout << "Hello world! \n";
@@ -31,6 +40,10 @@ int main(int argc, char* argv[])
     else
         std::cout << "Window created successfully! \n";
 
+    // Listen to events
+    // TODO: 
+    //glfwSetKeyCallback(window, keyCallback);
+
     // Set the window are redering context
     glfwMakeContextCurrent(window);
 
@@ -44,34 +57,76 @@ int main(int argc, char* argv[])
     //////////////////////////////////////////////////////////////
     // Vertices and Buffer
     //////////////////////////////////////////////////////////////
-    constexpr unsigned VERTICES_DATA_SIZE = 9;
+    constexpr unsigned VERTICES_DATA_SIZE = 18;
 
-    float vertices[VERTICES_DATA_SIZE] =
+    float triangleVertices[VERTICES_DATA_SIZE] =
     {
-        //x     y   z
-        0.0f,   0.5f,  0.0f,
-       -0.5f,  -0.5f,  0.0f,
-        0.5f,  -0.5f,  0.0f
+        //x     y       z       R       G       B
+        0.5f,   0.5f,  0.0f,   1.0f,   0.0f,    0.0f,
+       -0.5f,  -0.5f,  0.0f,   0.0f,   1.0f,    0.0f,
+        0.5f,  -0.5f,  0.0f,   0.0f,   0.0f,    1.0f
     };
 
-    std::cout << "Size of vertices: " << sizeof(vertices) << "\n";
+    constexpr unsigned RECT_VERTICES_DATA_SIZE = 24;
 
+    float rectangleVertices[RECT_VERTICES_DATA_SIZE] =
+    {
+        //x     y       z       R       G       B
+        0.5f,   0.5f,  0.0f,   1.0f,   0.0f,    0.0f,
+       -0.5f,   0.5f,  0.0f,   0.0f,   1.0f,    0.0f,
+       -0.5f,  -0.5f,  0.0f,   0.0f,   0.0f,    1.0f,
+        0.5f,  -0.5f,  0.0f,   1.0f,   1.0f,    0.0f
+    };
+
+    // Store the indices to re-use vertex data
+    constexpr unsigned RECT_INDICES_SIZE = 6;
+    unsigned int rectangleIndices[RECT_INDICES_SIZE] =
+    {
+        0, 1, 2,
+        0, 2, 3
+    };
+
+    std::cout << "Size of rectangeVertices: " << sizeof(rectangleVertices) << "\n";
+
+    ////////////////////////////////////////////////////////
+    // Declare buffers
+    ////////////////////////////////////////////////////////
+
+    GLuint vbo; // Vertex Buffer Object
+
+    GLuint vao; // Vertex Attributes Object
+
+    GLuint ebo; // Elements Buffer Object
+
+    ////////////////////////////////////////////////////////
+    // Generate buffers
+    ////////////////////////////////////////////////////////
     // vertex buffer object, sending memory to the VRAM
-    GLuint vbo;
     glGenBuffers(1, &vbo);
+    
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(rectangleVertices), &rectangleVertices[0], GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+    glGenBuffers(1, &ebo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(rectangleIndices), &rectangleIndices[0], GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
     // Define the attributes of the data
-    GLuint vao;
     glGenVertexArrays(1, &vao);
+    
     glBindVertexArray(vao);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 
     // Define how to interpret the data
-    glVertexAttribPointer(0, 3, GL_FLOAT, false, 3 * sizeof(float), (void*)0);
+    //                    index    count    type      normalized    stride                      off-set
+    glVertexAttribPointer( 0,       3,      GL_FLOAT, false,        6 * sizeof(float),  (void*)  0                  );
+    glVertexAttribPointer( 1,       3,      GL_FLOAT, false,        6 * sizeof(float),  (void*) (3 * sizeof(float)) );
+    
     glEnableVertexAttribArray(0); // Note for future me, this step is key, otherwise OpenGL wont know how to read the vertex data
+    glEnableVertexAttribArray(1);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
@@ -82,11 +137,16 @@ int main(int argc, char* argv[])
     // Load the shader program
     std::string vertexShaderSource = R"(
         #version 330 core
+
         layout (location = 0) in vec3 position;
-        
+        layout (location = 1) in vec3 color;
+
+        out vec3 colorUV;
+
         void main()
         {
             gl_Position = vec4(position.x, position.y, position.z, 1.0);
+            colorUV = color;
         }    
 
     )";
@@ -115,11 +175,15 @@ int main(int argc, char* argv[])
     //////////////////////////////////////////////////////////////
     std::string fragmentShaderSource = R"(
         #version 330 core
+        
+        uniform vec4 uColor;
+        
+        in vec3 colorUV;
         out vec4 FragColor;
 
         void main()
         {
-            FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+            FragColor = vec4(colorUV.r, colorUV.g, colorUV.b, 1.0) + uColor;
         }
     )";
 
@@ -157,8 +221,10 @@ int main(int argc, char* argv[])
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
 
-    ///
-
+    ///////////////////////////////////////////////////////////////////////////////
+    // Set uniforms
+    ///////////////////////////////////////////////////////////////////////////////
+    GLuint uColorLocation = glGetUniformLocation(shaderProgram, "uColor");
 
     // Start main loop
     while (!glfwWindowShouldClose(window))
@@ -167,8 +233,10 @@ int main(int argc, char* argv[])
         glClear(GL_COLOR_BUFFER_BIT);
 
         glUseProgram(shaderProgram);
+        glUniform4f(uColorLocation, 0.5f, 0.5f, 0.5f, 1.0f);
         glBindVertexArray(vao);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        //glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
