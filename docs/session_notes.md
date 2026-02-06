@@ -2,6 +2,9 @@
 
 This is not meant to have value for users of this code but to the author's learning journey. For information on how to use this Engine, go to the Wiki.
 
+## Feb 6 2026
+- Uniforms are variables that can be set at runtime by the CPU but do not change throughout the draw call. One needs to get the location of the variables from the already compiled shader program.
+
 ## Feb 5 2026
 <img src="hello_triangle.png" alt="Hello Triangle" style="width: 480px; height: auto;">
 
