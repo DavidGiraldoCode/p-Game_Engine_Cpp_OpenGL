@@ -4,14 +4,53 @@
 #include <GLFW/glfw3.h>
 #include <string>
 
-// TODO
-/*
+struct Position
+{
+    float x = 0.f;
+    float y = 0.f;
+    float z = 0.f;
+};
+
+Position offSet;
+
 void keyCallback(GLFWwindow* window, int key, int scanCode, int action, int mods)
 {
-    switch(key)
+
+    if (action == GLFW_PRESS)
+    {
+        char* keyMessage = "";
+        switch (key)
+        {
+        case GLFW_KEY_UP:
+            keyMessage = "up";
+            offSet.y += 0.1f;
+            break;
+
+        case GLFW_KEY_DOWN:
+            keyMessage = "down";
+            offSet.y -= 0.1f;
+            break;
+
+        case GLFW_KEY_RIGHT:
+            keyMessage = "right";
+            offSet.x += 0.1f;
+            break;
+
+        case GLFW_KEY_LEFT:
+            keyMessage = "left";
+            offSet.x -= 0.1f;
+            break;
+
+        default:
+            break;
+        }
+
+        std::cout << keyMessage << '\n';
+
+    }
 
 }
-*/
+
 
 int main(int argc, char* argv[])
 {
@@ -42,7 +81,8 @@ int main(int argc, char* argv[])
 
     // Listen to events
     // TODO: 
-    //glfwSetKeyCallback(window, keyCallback);
+
+    glfwSetKeyCallback(window, keyCallback);
 
     // Set the window are redering context
     glfwMakeContextCurrent(window);
@@ -137,15 +177,21 @@ int main(int argc, char* argv[])
     // Load the shader program
     std::string vertexShaderSource = R"(
         #version 330 core
+        
+        uniform vec3 uOffSet;
 
         layout (location = 0) in vec3 position;
         layout (location = 1) in vec3 color;
-
+        
         out vec3 colorUV;
 
         void main()
         {
-            gl_Position = vec4(position.x, position.y, position.z, 1.0);
+
+            gl_Position = vec4( position.x + uOffSet.x , 
+                                position.y + uOffSet.y, 
+                                position.z + + uOffSet.z, 
+                                1.0);
             colorUV = color;
         }    
 
@@ -225,6 +271,9 @@ int main(int argc, char* argv[])
     // Set uniforms
     ///////////////////////////////////////////////////////////////////////////////
     GLuint uColorLocation = glGetUniformLocation(shaderProgram, "uColor");
+    GLuint uOffSetLocation = glGetUniformLocation(shaderProgram, "uOffSet");
+
+    
 
     // Start main loop
     while (!glfwWindowShouldClose(window))
@@ -234,6 +283,7 @@ int main(int argc, char* argv[])
 
         glUseProgram(shaderProgram);
         glUniform4f(uColorLocation, 0.5f, 0.5f, 0.5f, 1.0f);
+        glUniform3f(uOffSetLocation, offSet.x, offSet.y, offSet.z);
         glBindVertexArray(vao);
         //glDrawArrays(GL_TRIANGLES, 0, 3);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
