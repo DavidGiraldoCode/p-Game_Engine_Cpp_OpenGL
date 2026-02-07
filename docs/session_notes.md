@@ -2,6 +2,14 @@
 
 This is not meant to have value for users of this code but to the author's learning journey. For information on how to use this Engine, go to the Wiki.
 
+## Feb 7 2026
+
+**Assingment:** Render 5 unique objects (2D).
+- [ ] Use a different color/shape per object 
+- [ ] One object should animate over time
+- [ ] One object should response to keyboard input
+
+
 ## Feb 6 2026
 - Uniforms are variables that can be set at runtime by the CPU but do not change throughout the draw call. One needs to get the location of the variables from the already compiled shader program.
 
