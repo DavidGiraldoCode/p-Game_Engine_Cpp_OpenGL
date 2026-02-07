@@ -3,11 +3,15 @@
 This is not meant to have value for users of this code but to the author's learning journey. For information on how to use this Engine, go to the Wiki.
 
 ## Feb 7 2026
+/ **TODO:** Create a new branch `expose_engine_lib`
+- The Engine code is treated as an external library. In the GameEngineProject, you include the headers from the engine lib, and a Game class extends from Application.  
+- I have not added or exposed the header files just yet. That's the next thing.  
+- Also, I need to read about the implications of the functions the instructor is calling after using smart pointers. I intend to use raw pointers and practice handling memory on my own.
 
 **Assingment:** Render 5 unique objects (2D).
-- [ ] Use a different color/shape per object 
-- [ ] One object should animate over time
-- [ ] One object should response to keyboard input
+- [x] Use a different color/shape per object 
+- [x] One object should animate over time
+- [x] One object should response to keyboard input
 
 
 ## Feb 6 2026
