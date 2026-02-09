@@ -2,11 +2,30 @@
 
 This is not meant to have value for users of this code but to the author's learning journey. For information on how to use this Engine, go to the Wiki.
 
+## Feb 9 2026
+- The egn.h library has been properly imported
+- There's a WORKFLOW_GUIDELINES.md file to explain how to add files and update dependencies.
+
 ## Feb 7 2026
-/ **TODO:** Create a new branch `expose_engine_lib`
-- The Engine code is treated as an external library. In the GameEngineProject, you include the headers from the engine lib, and a Game class extends from Application.  
-- I have not added or exposed the header files just yet. That's the next thing.  
-- Also, I need to read about the implications of the functions the instructor is calling after using smart pointers. I intend to use raw pointers and practice handling memory on my own.
+
+```C++
+class App{/*some defintions*/};
+
+// with smath pointers
+std::unique_ptr<Application> m_app;
+
+void SetApp(App *app)
+{
+    m_app.reset(app);
+}
+
+App* GetApp()
+{
+    return app.get();
+}
+
+```
+*To use raw pointer the owership must be explicit, implementing proper RAII principles
 
 **Assingment:** Render 5 unique objects (2D).
 - [x] Use a different color/shape per object 
