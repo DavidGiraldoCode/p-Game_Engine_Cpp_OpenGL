@@ -1,7 +1,7 @@
 #include "Engine.h"
 #include "Application.h"
 
-namespace engine
+namespace eng
 {
 	Engine::Engine()
 	{
@@ -10,7 +10,8 @@ namespace engine
 
 	Engine::~Engine()
 	{
-
+		delete m_app;
+		m_app = nullptr;
 	}
 
 	bool Engine::Init()
@@ -40,25 +41,23 @@ namespace engine
 		}
 	};
 	
-	void Engine::Destroy()
+	void Engine::Shutdown() // Previously Destroy
 	{
 		if (m_app)
 		{
-			m_app->Destroy();
-			m_app = nullptr;
+			m_app->Destroy(); // logical clean up only
 		}
 	
 	};
 
 	void Engine::SetApplication(Application *app)
 	{
-		// TODO: Validate this when using raw pointers instead of smart pointers
-		m_app = app;
+		delete m_app; 	// Delete previous
+		m_app = app;	// Takes ownership
 	};
 
-	Application* Engine::GetApplication()
+	Application* Engine::GetApplication() const
 	{
-		// TODO: Validate this when using raw pointers instead of smart pointers
 		return m_app;
 	}
 }
