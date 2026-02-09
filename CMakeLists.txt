@@ -6,6 +6,8 @@ project(GameDevelopmentProject)
 # Defines the app sources
 set(PROJECT_SOURCE_FILES
     source/main.cpp
+    source/Game.h
+    source/Game.cpp
 )
 
 # Adds source/ to the header searc path
@@ -18,6 +20,7 @@ add_executable(${PROJECT_NAME} ${PROJECT_SOURCE_FILES})
 # Add the directory
 add_subdirectory(engine "${CMAKE_CURRENT_BINARY_DIR}/engine_build")
 
+# Link the Engine
 target_link_libraries(${PROJECT_NAME}
     Engine
 )

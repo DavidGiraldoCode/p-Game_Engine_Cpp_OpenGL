@@ -7,6 +7,7 @@ set(PROJECT_SOURCE_FILES
     source/Engine.cpp
     source/Application.h
     source/Application.cpp
+    source/eng.h
 )
 include_directories(source)
 
@@ -34,3 +35,9 @@ set_property(TARGET glew PROPERTY FOLDER GLEW)
 
 # Link all thirdparty libraries, links the app with GLFW and static GLEW (hence glew_s)
 target_link_libraries(${PROJECT_NAME} glfw glew_s)
+
+# Engine exports its include path itself
+target_include_directories(Engine
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/source
+)
