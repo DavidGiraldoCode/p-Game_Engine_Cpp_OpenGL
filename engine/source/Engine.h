@@ -1,5 +1,6 @@
 #pragma once
 #include <chrono>
+#include <iostream>
 
 /////////////////////////////////////////////////////////
 // Engine class
@@ -11,8 +12,11 @@
  */
 /////////////////////////////////////////////////////////
 
+struct GLFWwindow; //TODO review why this is declare here and not inside the namespace
+
 namespace eng
 {
+
 
 	/* Forward declaration:
 	* This tells the compiler: 
@@ -32,7 +36,8 @@ namespace eng
 		/// Separates "object exists" from "object ready for use"
 		/// </summary>
 		/// <returns></returns>
-		bool Init();
+		bool Init(unsigned int width, unsigned int height);
+		
 		void Run();
 
 		/// <summary>
@@ -46,13 +51,23 @@ namespace eng
 		/// and Engine in charge of deleting Game.
 		/// </summary>
 		/// <param name="app"> The pointer created in main </param>
-		void SetApplication(Application* app);	// ownership transfer 
+		void SetApplication(Application* app);	// ownership transfer
+
 		Application* GetApplication() const;	// non-owning access
 	
 	private:
-		Application* m_app = nullptr;
-
 		std::chrono::steady_clock::time_point m_lastTimePoint;
+		
+		Application*	m_app		= nullptr;
+		GLFWwindow*		m_window	= nullptr;
+
+		/// <summary>
+		/// Uses GLWF to create the window and set the OpenGL context
+		/// </summary>
+		/// <returns>True is window succeed</returns>
+		bool CreateWindow( const unsigned int width, const unsigned int height, const char* title);
+
+		void UpdateDeltaTime(float& timeToUpdate);
 	};
 
 }
