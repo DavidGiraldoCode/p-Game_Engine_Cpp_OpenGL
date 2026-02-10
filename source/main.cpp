@@ -7,11 +7,13 @@ int main(int argc, char *argv[])
     std::cout << "Ready to build a Game Engine\n";
 
     // Ownership pattern
-    Game* game = new Game();
+    // Game* game = new Game();
+    
+    // Ownership pattern
     eng::Engine engine;
-    engine.SetApplication(game);
+    engine.SetApplication(new Game());
 
-    if (engine.Init())
+    if (engine.Init(1280,720))
     {
         engine.Run();
     }

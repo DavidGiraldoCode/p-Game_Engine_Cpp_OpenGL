@@ -1,5 +1,7 @@
 #include "Engine.h"
 #include "Application.h"
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 
 namespace eng
 {
@@ -14,9 +16,12 @@ namespace eng
 		m_app = nullptr;
 	}
 
-	bool Engine::Init()
+	bool Engine::Init(unsigned int width, unsigned int height)
 	{
 		if (!m_app)
+			return false;
+
+		if (!CreateWindow(width, height, "Profetics Engine"))
 			return false;
 
 		return m_app->Init();
@@ -24,19 +29,26 @@ namespace eng
 
 	void Engine::Run()
 	{
-	
 		if (!m_app)
 			return;
 
 		m_lastTimePoint = std::chrono::high_resolution_clock::now();
+		float deltaTime = 0.f;
 
-		while (!m_app->NeedsToBeClosed())
+		///////////////////////////////////////////////////////////////////////
+		// THE GAME LOOP
+		///////////////////////////////////////////////////////////////////////
+		while (!glfwWindowShouldClose(m_window) && !m_app->NeedsToBeClosed())
 		{
-			auto now = std::chrono::high_resolution_clock::now();
-			float delatTime = std::chrono::duration<float>(now - m_lastTimePoint).count();
-			m_lastTimePoint = now;
-
-			m_app->Update(delatTime);
+			// Handle user inputs
+			glfwPollEvents();
+			
+			// Update game logic
+			UpdateDeltaTime(deltaTime);
+			m_app->Update(deltaTime);
+			
+			// Handle rendering
+			glfwSwapBuffers(m_window);
 
 		}
 	};
@@ -46,6 +58,8 @@ namespace eng
 		if (m_app)
 		{
 			m_app->Destroy(); // logical clean up only
+			glfwTerminate();
+			m_window = nullptr;
 		}
 	
 	};
@@ -60,4 +74,56 @@ namespace eng
 	{
 		return m_app;
 	}
+
+	///////////////////////////////////////////////////////////////////
+	// Privates
+	///////////////////////////////////////////////////////////////////
+
+	bool Engine::CreateWindow(const unsigned int width, const unsigned int height, const char* title)
+	{
+		if (width == 0 || height == 0)
+		{
+			std::cout << "ERROR: The window size must be grater than 0 \n";
+			return false;
+		}
+
+		// Initialize GLWF
+		if (!glfwInit())
+			return false;
+		
+		// Set OpenGL version
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+		
+		// Create a window and validate
+		m_window = glfwCreateWindow( width, height, title, nullptr, nullptr);
+		if (m_window == nullptr)
+		{
+			std::cerr << "ERROR WINDOW CREATION FAILED \n";
+			glfwTerminate();
+			return false;
+		}
+
+		// Set the rendering context
+		glfwMakeContextCurrent(m_window);
+
+		// Initialize glew (OpenGL) and validate
+		if (glewInit() != GLEW_OK)
+		{
+			std::cerr << "ERROR: SETTING RENDERING CONTEXT FAILED \n";
+			glfwTerminate();
+			return false;
+		}
+
+		return true;
+	}
+
+	void Engine::UpdateDeltaTime(float& timeToUpdate)
+	{
+		auto now = std::chrono::high_resolution_clock::now();
+		timeToUpdate = std::chrono::duration<float>(now - m_lastTimePoint).count();
+		m_lastTimePoint = now;
+	}
+
 }
