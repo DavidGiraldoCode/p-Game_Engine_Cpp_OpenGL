@@ -10,13 +10,16 @@ How to add files, manage dependencies, and keep the build working.
 p-Game_Engine_Cpp_OpenGL/
 ├── CMakeLists.txt              # Root: defines the executable, links Engine
 ├── source/
+│   ├── Game.h / .cpp
 │   └── main.cpp                # Application entry point
 ├── engine/
 │   ├── CMakeLists.txt          # Engine library: defines sources, links GLEW/GLFW
 │   ├── source/                 # Engine .h and .cpp files
 │   │   ├── eng.h               # Public facade header (include this from main)
 │   │   ├── Engine.h / .cpp
-│   │   └── Application.h / .cpp
+│   │   ├── Application.h / .cpp
+│   │   └── input/
+│   │        └── InputManager.h / .cpp
 │   └── thirdparty/
 │       ├── glfw-3.4/           # GLFW (built from source)
 │       └── glew/               # GLEW (built from source)

@@ -1,6 +1,7 @@
 #pragma once
 #include <chrono>
 #include <iostream>
+#include "input/InputManager.h"
 
 /////////////////////////////////////////////////////////
 // Engine class
@@ -11,32 +12,44 @@
  * Only one owner
  */
 /////////////////////////////////////////////////////////
-
-struct GLFWwindow; //TODO review why this is declare here and not inside the namespace
+constexpr unsigned int DEFALT_WINDOW_WIDTH = 1280;
+constexpr unsigned int DEFALT_WINDOW_HEIGHT = 720;
+struct GLFWwindow; // Forward declaration on a global scope, because glfw is a C library without namespaces.
 
 namespace eng
 {
-
-
-	/* Forward declaration:
-	* This tells the compiler: 
-	* A class called Application exists I'll give you its full definition later.
-	**/ 
+	/// Forward declaration:
+	// This tells the compiler: "A class called Application exists I'll give you its full definition later."
 	class Application;
 
+	/// <summary>
+	/// Singleton class
+	/// </summary>
 	class Engine
 	{
-	public:
-		Engine();
+	private:
+		Engine() = default;
+
+		// The following deletions tell the compiler that this functions exits but should not be called, throwing an error
+		// This enforces the behaviour and use of the singleton
+		Engine(const Engine&) = delete;		// Copy constructor deleted
+		Engine(Engine&&) = delete;			// Move constructor deleted
+
+		Engine& operator = (const Engine&) = delete;	// Copy operator deleted
+		Engine& operator = (Engine&&) = delete;			// Move operator deleted
+
 		~Engine();
+
+	public:
+		static Engine& GetInstance();
 
 		/// <summary>
 		/// Executes Init in the game instance.
-		/// 
 		/// Separates "object exists" from "object ready for use"
+		/// It uses a default window size if parameters are not passed in
 		/// </summary>
 		/// <returns></returns>
-		bool Init(unsigned int width, unsigned int height);
+		bool Init(unsigned int width = DEFALT_WINDOW_WIDTH, unsigned int height = DEFALT_WINDOW_HEIGHT);
 		
 		void Run();
 
@@ -54,12 +67,15 @@ namespace eng
 		void SetApplication(Application* app);	// ownership transfer
 
 		Application* GetApplication() const;	// non-owning access
+
+		InputManager& GetInputManager();
 	
 	private:
 		std::chrono::steady_clock::time_point m_lastTimePoint;
 		
-		Application*	m_app		= nullptr;
-		GLFWwindow*		m_window	= nullptr;
+		Application*	m_app			= nullptr;
+		GLFWwindow*		m_window		= nullptr;
+		InputManager	m_inputManager;	// The Engine will call InputManger() default constructor because its a friend class
 
 		/// <summary>
 		/// Uses GLWF to create the window and set the OpenGL context
