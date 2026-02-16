@@ -9,7 +9,7 @@ public:
 	/// The `Init()` separates "object exists" from "object ready for use"
 	/// </summary>
 	/// <returns></returns>
-	bool Init() override;
-	void Update(float deltaTime) override;
-	void Destroy() override;
+	bool Init() 					override;
+	void Update(float deltaTime) 	override;
+	void Destroy() 					override;
 };
