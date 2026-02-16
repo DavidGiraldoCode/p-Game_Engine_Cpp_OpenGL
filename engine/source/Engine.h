@@ -28,6 +28,7 @@ namespace eng
 	class Engine
 	{
 	private:
+		// Make all constructors private so the instance can only be created form inside the class.
 		Engine() = default;
 
 		// The following deletions tell the compiler that this functions exits but should not be called, throwing an error
@@ -41,6 +42,8 @@ namespace eng
 		~Engine();
 
 	public:
+		/// @brief Meyer's Singleton, creates an instance in static memory the frist time is it created
+		/// @return 
 		static Engine& GetInstance();
 
 		/// <summary>
@@ -48,9 +51,11 @@ namespace eng
 		/// Separates "object exists" from "object ready for use"
 		/// It uses a default window size if parameters are not passed in
 		/// </summary>
-		/// <returns></returns>
 		bool Init(unsigned int width = DEFALT_WINDOW_WIDTH, unsigned int height = DEFALT_WINDOW_HEIGHT);
 		
+		/// <summary>
+		///	Contains the Main Game Loop: Input, Game State/Logic, Sound and Rendering
+		/// </summary>
 		void Run();
 
 		/// <summary>
@@ -59,11 +64,9 @@ namespace eng
 		void Shutdown(); // previously Destroy, logical shutdown only
 
 		/// <summary>
-		/// Ownership transferred happens here.
-		/// Gets the pointer to the Game instance created by main.cpp,
+		/// Ownership transferred happens here. Gets the pointer to the Game instance created by main.cpp,
 		/// and Engine in charge of deleting Game.
 		/// </summary>
-		/// <param name="app"> The pointer created in main </param>
 		void SetApplication(Application* app);	// ownership transfer
 
 		Application* GetApplication() const;	// non-owning access
@@ -75,12 +78,14 @@ namespace eng
 		
 		Application*	m_app			= nullptr;
 		GLFWwindow*		m_window		= nullptr;
-		InputManager	m_inputManager;	// The Engine will call InputManger() default constructor because its a friend class
+		
+		// The Engine will call InputManger() default constructor because its a friend class
+		InputManager	m_inputManager;	
 
 		/// <summary>
 		/// Uses GLWF to create the window and set the OpenGL context
 		/// </summary>
-		/// <returns>True is window succeed</returns>
+		/// <returns>True, if window succeed</returns>
 		bool CreateWindow( const unsigned int width, const unsigned int height, const char* title);
 
 		void UpdateDeltaTime(float& timeToUpdate);
