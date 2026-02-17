@@ -2,6 +2,7 @@
 #include <chrono>
 #include <iostream>
 #include "input/InputManager.h"
+#include "graphics/GraphicsAPI.h"
 
 /////////////////////////////////////////////////////////
 // Engine class
@@ -72,6 +73,8 @@ namespace eng
 		Application* GetApplication() const;	// non-owning access
 
 		InputManager& GetInputManager();
+
+		GraphicsAPI& GetGraphicsAPI();
 	
 	private:
 		std::chrono::steady_clock::time_point m_lastTimePoint;
@@ -81,6 +84,8 @@ namespace eng
 		
 		// The Engine will call InputManger() default constructor because its a friend class
 		InputManager	m_inputManager;	
+
+		GraphicsAPI		m_graphicsApi;
 
 		/// <summary>
 		/// Uses GLWF to create the window and set the OpenGL context
