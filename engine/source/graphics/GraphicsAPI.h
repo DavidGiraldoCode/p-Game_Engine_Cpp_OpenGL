@@ -7,7 +7,9 @@ using std::string;
 
 namespace eng
 {
-	class ShaderProgram; // Forward declaration
+	// Forward declaration
+	class ShaderProgram; 
+	class Material;
 
 	/// <summary>
 	/// 
@@ -23,7 +25,8 @@ namespace eng
 		/// original: std::shared_ptr<ShaderProgram> instead of ShaderProgram*
 		/// </summary>
 		ShaderProgram*	CreateShaderProgram(const string& vertexSourceCode, const string& fragmentSourceCode);
-		void			BindShaderProgram(ShaderProgram& shaderProgram);
+		void			BindShaderProgram(ShaderProgram& shaderProgram); // original ShaderProgram*
+		void			BindMaterial(Material& material); //original Material* 
 
 	private:
 		bool			IsShaderCompilationSuccessful(const GLuint shader) const;

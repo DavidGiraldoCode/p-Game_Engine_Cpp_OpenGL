@@ -49,8 +49,8 @@ bool Game::Init()
     auto& graphicsApi = Engine::GetInstance().GetGraphicsAPI();
 
     eng::ShaderProgram* shaderProgram = graphicsApi.CreateShaderProgram(vertexShaderSource, fragmentShaderSource);
+    m_material.SetShaderProgram(shaderProgram);
 
-    delete shaderProgram; // TODO, put this in the Destuctor, but create member variable.
 	return true;
 }
 

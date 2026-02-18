@@ -1,5 +1,6 @@
 #include "GraphicsAPI.h"
 #include "ShaderProgram.h"
+#include "render/Material.h"
 
 namespace eng
 {
@@ -47,9 +48,15 @@ namespace eng
 
 	void GraphicsAPI::BindShaderProgram(ShaderProgram& shaderProgram)
 	{
-		shaderProgram.Bind();
+		// No nullptr check is needed because we are passing a ref.
+			shaderProgram.Bind();
 	}
 
+	void GraphicsAPI::BindMaterial(Material& material)
+	{
+		// No nullptr check is needed because we are passing a ref.
+		material.Bind();
+	}
 
 	bool GraphicsAPI::IsShaderCompilationSuccessful(const GLuint shader) const
 	{

@@ -14,6 +14,8 @@ set(PROJECT_SOURCE_FILES
     source/graphics/GraphicsAPI.cpp
     source/graphics/ShaderProgram.h
     source/graphics/ShaderProgram.cpp
+    source/render/Material.h
+    source/render/Material.cpp
 )
 include_directories(source)
 
