@@ -10,6 +10,10 @@ set(PROJECT_SOURCE_FILES
     source/eng.h
     source/input/InputManager.h
     source/input/InputManager.cpp
+    source/graphics/GraphicsAPI.h
+    source/graphics/GraphicsAPI.cpp
+    source/graphics/ShaderProgram.h
+    source/graphics/ShaderProgram.cpp
 )
 include_directories(source)
 
@@ -42,4 +46,6 @@ target_link_libraries(${PROJECT_NAME} glfw glew_s)
 target_include_directories(Engine
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/source
+        ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glew/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glfw-3.4/include
 )

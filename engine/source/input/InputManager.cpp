@@ -10,7 +10,7 @@ namespace eng
 		m_keys[key] = pressed;
 	}
 
-	bool InputManager::IsKeyPressed(int key)
+	const bool InputManager::IsKeyPressed(int key)
 	{
 		if (key < 0 || key >= m_keysSize)
 			return false;

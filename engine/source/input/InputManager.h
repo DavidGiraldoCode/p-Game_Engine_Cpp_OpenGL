@@ -11,8 +11,8 @@ namespace eng
 	class InputManager
 	{
 	public:
-		void SetKeyPressed(int key, bool pressed);
-		bool IsKeyPressed(int key);
+				void SetKeyPressed(int key, bool pressed);
+		const	bool IsKeyPressed(int key);
 
 	private:
 
