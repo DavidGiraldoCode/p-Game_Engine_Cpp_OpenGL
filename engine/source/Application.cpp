@@ -7,7 +7,7 @@ namespace eng
 		m_needsToBeClosed = value;
 	}
 
-	bool Application::NeedsToBeClosed() const
+	const bool Application::NeedsToBeClosed() const
 	{
 		return m_needsToBeClosed;
 	}

@@ -100,6 +100,8 @@ rm -rf build
 cmake -S . -B build -G "Visual Studio 17 2022"
 cmake --build build
 ```
+`-S` stands for source directory, and `.` refers to the current folder, which translate to "Look for the CMake file in the current folder".
+`-B` stands for build directory, and `build` will be the name of the folder. And lastly `-G` stands for generator and the quotes are used because `"Visual Studio 17 2022"` has spaces in it.
 
 ---
 
