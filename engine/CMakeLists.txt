@@ -46,4 +46,6 @@ target_link_libraries(${PROJECT_NAME} glfw glew_s)
 target_include_directories(Engine
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/source
+        ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glew/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glfw-3.4/include
 )

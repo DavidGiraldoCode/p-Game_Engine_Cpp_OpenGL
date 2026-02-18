@@ -2,6 +2,9 @@
 
 This is not meant to have value for users of this code but to the author's learning journey. For information on how to use this Engine, go to the Wiki.
 
+## Feb 18 Feb
+When creating a ShaderProgram in the GraphicsAPI class, memory is allocated on the heap. The original purpose of using smart pointers is to allow multiple owners of the object and to automatically track the number of references to it. This approach also reduces the risk of double deletion. In contrast, when using raw pointers and returning a new ShaderProgram, the caller is responsible for deallocating the resource.
+
 ## Feb 9 2026
 - The egn.h library has been properly imported
 - There's a WORKFLOW_GUIDELINES.md file to explain how to add files and update dependencies.

@@ -23,7 +23,7 @@ namespace eng
 		glUniform1f(uniformLocation, value);
 	}
 
-	const GLint ShaderProgram::GetUniformLocation(const string& uniformName)
+	GLint ShaderProgram::GetUniformLocation(const string& uniformName)
 	{
 		auto iterator = m_uniformLocationCache.find(uniformName);
 		

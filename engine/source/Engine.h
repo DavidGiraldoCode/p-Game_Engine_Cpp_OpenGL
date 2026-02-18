@@ -72,7 +72,7 @@ namespace eng
 
 		Application* GetApplication() const;	// non-owning access
 
-		InputManager& GetInputManager();
+		InputManager& GetInputManager(); // Const Engine, read-only access
 
 		GraphicsAPI& GetGraphicsAPI();
 	

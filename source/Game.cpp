@@ -48,8 +48,9 @@ bool Game::Init()
 
     auto& graphicsApi = Engine::GetInstance().GetGraphicsAPI();
 
-    auto shaderProgram = graphicsApi.CreateShaderProgram(vertexShaderSource, fragmentShaderSource);
+    eng::ShaderProgram* shaderProgram = graphicsApi.CreateShaderProgram(vertexShaderSource, fragmentShaderSource);
 
+    delete shaderProgram; // TODO, put this in the Destuctor, but create member variable.
 	return true;
 }
 
@@ -64,5 +65,5 @@ void Game::Update(float deltaTime)
 
 void Game::Destroy()
 {
-	
+
 }

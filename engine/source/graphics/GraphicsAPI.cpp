@@ -1,8 +1,9 @@
 #include "GraphicsAPI.h"
+#include "ShaderProgram.h"
 
 namespace eng
 {
-	ShaderProgram* GraphicsAPI::CreateShaderProgram(string& vertexSourceCode, string& fragmentSourceCode)
+	ShaderProgram* GraphicsAPI::CreateShaderProgram(const string& vertexSourceCode, const string& fragmentSourceCode)
 	{
 
 		// Create handlers to shaders and program
@@ -40,21 +41,17 @@ namespace eng
 		glDeleteShader(vertexShader);
 		glDeleteShader(fragmentShader);
 
-
-		//shaderProgram = ShaderProgram shaderProgramHandler;
-		//ShaderProgram* id = shaderProgramID;
-		// original: return std::make_shared<ShaderProgram>(shaderProgramID)
-		//return shaderProgramID;
-		return nullptr; // TODO
+		// original: return std::make_shared<ShaderProgram>(shaderProgramID), Read about the learnings on this on Session notes Feb 19 2026
+		return new ShaderProgram(shaderProgramID);
 	}
 
 	void GraphicsAPI::BindShaderProgram(ShaderProgram& shaderProgram)
 	{
-		shaderProgram->Bind();
+		shaderProgram.Bind();
 	}
 
 
-	bool GraphicsAPI::IsShaderCompilationSuccessful(const GLuint& shader) const
+	bool GraphicsAPI::IsShaderCompilationSuccessful(const GLuint shader) const
 	{
 		GLint success;
 		const unsigned int LOG_BUFFER_SIZE = 512;
@@ -72,7 +69,7 @@ namespace eng
 		return true;
 	}
 
-	bool GraphicsAPI::IsProgramLinkingSuccessful(const GLuint& program) const
+	bool GraphicsAPI::IsProgramLinkingSuccessful(const GLuint program) const
 	{
 		GLint success;
 		const unsigned int LOG_BUFFER_SIZE = 512;
