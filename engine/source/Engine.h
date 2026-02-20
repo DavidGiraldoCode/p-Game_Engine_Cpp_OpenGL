@@ -3,6 +3,7 @@
 #include <iostream>
 #include "input/InputManager.h"
 #include "graphics/GraphicsAPI.h"
+#include "render/RenderQueue.h"
 
 /////////////////////////////////////////////////////////
 // Engine class
@@ -75,6 +76,8 @@ namespace eng
 		InputManager& GetInputManager(); // Const Engine, read-only access
 
 		GraphicsAPI& GetGraphicsAPI();
+
+		RenderQueue& GetRenderQueue();
 	
 	private:
 		std::chrono::steady_clock::time_point m_lastTimePoint;
@@ -86,6 +89,8 @@ namespace eng
 		InputManager	m_inputManager;	
 
 		GraphicsAPI		m_graphicsApi;
+
+		RenderQueue		m_renderQueue;
 
 		/// <summary>
 		/// Uses GLWF to create the window and set the OpenGL context

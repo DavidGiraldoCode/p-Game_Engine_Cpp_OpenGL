@@ -14,5 +14,6 @@ public:
 	void Destroy() 					override;
 
 private:
-	eng::Material m_material;
+	eng::Material	m_material;
+	eng::Mesh*		m_mesh;
 };

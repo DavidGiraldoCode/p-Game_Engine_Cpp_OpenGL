@@ -1,6 +1,7 @@
 #include "GraphicsAPI.h"
 #include "ShaderProgram.h"
 #include "render/Material.h"
+#include "render/Mesh.h"
 
 namespace eng
 {
@@ -56,6 +57,52 @@ namespace eng
 	{
 		// No nullptr check is needed because we are passing a ref.
 		material.Bind();
+	}
+
+
+	void GraphicsAPI::BindMesh(Mesh& mesh)
+	{
+		// No nullptr check is needed because we are passing a ref.
+		mesh.Bind();
+	}
+
+	GLuint GraphicsAPI::CreateVertexBuffer(const float* vertices, const size_t verticesCount)
+	{
+		GLuint vbo;
+
+		glGenBuffers(1, &vbo);
+		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * verticesCount, &vertices, GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+		return vbo;
+	}
+
+	GLuint GraphicsAPI::CreateIndexBuffer(const uint32_t* indices, const size_t indicesCount)
+	{
+		GLuint ebo;
+
+		glGenBuffers(1, &ebo);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32_t) * indicesCount, &indices, GL_STATIC_DRAW);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+		return ebo;
+
+	}
+
+	void GraphicsAPI::SetClearColor(const float r, const float g, const float b, const float a)
+	{
+		glClearColor(r,g,b,a);
+	}
+	void GraphicsAPI::ClearBuffers()
+	{
+		glClear(GL_COLOR_BUFFER_BIT);
+	}
+
+	void GraphicsAPI::DrawMesh(Mesh& mesh)
+	{
+		mesh.Draw();
 	}
 
 	bool GraphicsAPI::IsShaderCompilationSuccessful(const GLuint shader) const

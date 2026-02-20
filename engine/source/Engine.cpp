@@ -61,6 +61,11 @@ namespace eng
 			// Update game logic
 			UpdateDeltaTime(deltaTime);
 			m_app->Update(deltaTime);
+
+			m_graphicsApi.SetClearColor(1.f, 1.f, 1.f, 1.f);
+			m_graphicsApi.ClearBuffers();
+
+			m_renderQueue.Draw(m_graphicsApi);
 			
 			// Handle rendering
 			glfwSwapBuffers(m_window);
@@ -98,6 +103,11 @@ namespace eng
 	GraphicsAPI& Engine::GetGraphicsAPI()
 	{
 		return m_graphicsApi;
+	}
+
+	RenderQueue& Engine::GetRenderQueue()
+	{
+		return m_renderQueue;
 	}
 
 	///////////////////////////////////////////////////////////////////

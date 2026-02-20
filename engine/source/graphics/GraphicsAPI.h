@@ -7,9 +7,10 @@ using std::string;
 
 namespace eng
 {
-	// Forward declaration
+	// Forward declaration for pointers
 	class ShaderProgram; 
 	class Material;
+	class Mesh;
 
 	/// <summary>
 	/// 
@@ -27,6 +28,16 @@ namespace eng
 		ShaderProgram*	CreateShaderProgram(const string& vertexSourceCode, const string& fragmentSourceCode);
 		void			BindShaderProgram(ShaderProgram& shaderProgram); // original ShaderProgram*
 		void			BindMaterial(Material& material); //original Material* 
+		void			BindMesh(Mesh& mesh);
+		//////////////////////////////////////////////////////////////////////
+		// Buffer creation
+		//////////////////////////////////////////////////////////////////////
+		GLuint			CreateVertexBuffer(const float* vertices, const size_t verticesCount);
+		GLuint			CreateIndexBuffer(const uint32_t* indices, const size_t indicesCount);
+		
+		void			SetClearColor(const float r, const float g, const float b, const float a);
+		void			ClearBuffers();
+		void			DrawMesh(Mesh& mesh);
 
 	private:
 		bool			IsShaderCompilationSuccessful(const GLuint shader) const;
