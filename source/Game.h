@@ -12,4 +12,10 @@ public:
 	bool Init() 					override;
 	void Update(float deltaTime) 	override;
 	void Destroy() 					override;
+
+private:
+	eng::Material	m_material;
+	
+	// Always initialize pointers to nullptr. If a process fails early, this member contains garbage.
+	eng::Mesh*		m_mesh			= nullptr;		// original std::unique_ptr<eng::Mesh>
 };

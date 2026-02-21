@@ -3,17 +3,25 @@ cmake_minimum_required(VERSION 3.10)
 project(Engine)
 
 set(PROJECT_SOURCE_FILES
+    source/eng.h
     source/Engine.h
     source/Engine.cpp
     source/Application.h
     source/Application.cpp
-    source/eng.h
     source/input/InputManager.h
     source/input/InputManager.cpp
     source/graphics/GraphicsAPI.h
     source/graphics/GraphicsAPI.cpp
     source/graphics/ShaderProgram.h
     source/graphics/ShaderProgram.cpp
+    source/graphics/VertexLayout.h
+    source/graphics/VertexLayout.cpp
+    source/render/Material.h
+    source/render/Material.cpp
+    source/render/Mesh.h
+    source/render/Mesh.cpp
+    source/render/RenderQueue.h
+    source/render/RenderQueue.cpp
 )
 include_directories(source)
 

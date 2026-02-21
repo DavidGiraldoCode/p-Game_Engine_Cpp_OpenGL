@@ -1,5 +1,7 @@
 #include "GraphicsAPI.h"
 #include "ShaderProgram.h"
+#include "render/Material.h"
+#include "render/Mesh.h"
 
 namespace eng
 {
@@ -22,34 +24,107 @@ namespace eng
 		glCompileShader(vertexShader);
 
 		if (!IsShaderCompilationSuccessful(vertexShader))
+		{
+			DeletePrograms(vertexShader, fragmentShader, shaderProgramID);
 			return nullptr;
+		}
 
 		glCompileShader(fragmentShader);
 		if (!IsShaderCompilationSuccessful(fragmentShader))
+		{
+			DeletePrograms(vertexShader, fragmentShader, shaderProgramID);
 			return nullptr;
+		}
 
 		// Attach to shader program
 		glAttachShader(shaderProgramID, vertexShader);
 		glAttachShader(shaderProgramID, fragmentShader);
 		
-		// Link shader program
+		// Link shader program and validate
 		glLinkProgram(shaderProgramID);
 		if (!IsProgramLinkingSuccessful(shaderProgramID))
+		{
+			DeletePrograms(vertexShader, fragmentShader, shaderProgramID);
 			return nullptr;
+		}
 
 		// Delete shader handlers
-		glDeleteShader(vertexShader);
-		glDeleteShader(fragmentShader);
+		DeletePrograms(vertexShader, fragmentShader);
 
-		// original: return std::make_shared<ShaderProgram>(shaderProgramID), Read about the learnings on this on Session notes Feb 19 2026
+		// original return type: std::make_shared<ShaderProgram>(shaderProgramID)
+		// Read more about the learnings on this on Session notes Feb 19 2026
+		// TODO: Validate this following: GraphicsAPI creates memory in the heap, but does not owns it.
+		// someone else has to take it and deal with the deletion
 		return new ShaderProgram(shaderProgramID);
 	}
 
-	void GraphicsAPI::BindShaderProgram(ShaderProgram& shaderProgram)
+	void GraphicsAPI::BindShaderProgram(ShaderProgram* shaderProgram)
 	{
-		shaderProgram.Bind();
+		if(shaderProgram != nullptr)
+			shaderProgram->Bind();
 	}
 
+	void GraphicsAPI::BindMaterial(Material* material)
+	{
+		// No nullptr check is needed because we are passing a ref.
+		//material.Bind();
+
+		if (material != nullptr)
+			material->Bind();
+	}
+
+
+	void GraphicsAPI::BindMesh(Mesh* mesh)
+	{
+		// No nullptr check is needed because we are passing a ref.
+		//mesh.Bind();
+		
+		if (mesh != nullptr)
+			mesh->Bind();
+	}
+
+	GLuint GraphicsAPI::CreateVertexBuffer(const float* vertices, const size_t totalFComponentsCount)
+	{
+		GLuint vbo = 0;
+
+		glGenBuffers(1, &vbo);
+		glBindBuffer(GL_ARRAY_BUFFER, vbo);              
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * totalFComponentsCount, vertices, GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+		return vbo;
+		// Note a commun mistake, Passing vertices as &vertices, sends the address of a stack variable
+		// to the GPU, instead of the pointer to the firts geometry data point in the array.
+		// But, passing vertices = &vertives[0], because this is the address of the first element in the array
+	}
+
+	GLuint GraphicsAPI::CreateIndexBuffer(const unsigned int* indices, const size_t indicesCount)
+	{
+		GLuint ebo = 0;
+
+		glGenBuffers(1, &ebo);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * indicesCount, &indices[0], GL_STATIC_DRAW);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+		return ebo;
+
+	}
+
+	void GraphicsAPI::SetClearColor(const float r, const float g, const float b, const float a)
+	{
+		glClearColor(r,g,b,a);
+	}
+	void GraphicsAPI::ClearBuffers()
+	{
+		glClear(GL_COLOR_BUFFER_BIT);
+	}
+
+	void GraphicsAPI::DrawMesh(Mesh* mesh)
+	{
+		if(mesh != nullptr)
+			mesh->Draw();
+	}
 
 	bool GraphicsAPI::IsShaderCompilationSuccessful(const GLuint shader) const
 	{
@@ -86,5 +161,18 @@ namespace eng
 
 		return true;
 	}
+
+	void GraphicsAPI::DeletePrograms(const GLuint vertShader, const GLuint fragShader, const GLuint shaderProgram)
+	{
+		glDeleteShader(vertShader);
+		glDeleteShader(fragShader);
+		glDeleteProgram(shaderProgram);
+	}
+	void GraphicsAPI::DeletePrograms(const GLuint vertShader, const GLuint fragShader)
+	{
+		glDeleteShader(vertShader);
+		glDeleteShader(fragShader);
+	}
+
 
 }
