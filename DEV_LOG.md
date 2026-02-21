@@ -25,7 +25,7 @@
 
 ### BUG-03 · RenderQueue::Submit — Stores Address of a Local Variable
 - **Files:** `engine/source/render/RenderQueue.cpp`, `source/Game.cpp`
-- **Status:** `[🚩]`
+- **Status:** `[✅]`
 - **What:** `Game::Update()` creates `RenderCommand command` on the stack and passes `&command` to `Submit()`. The instant `Update()` returns, `command` is destroyed. `Engine::Run()` then calls `Draw()` and dereferences that dead address — use-after-free crash.
 - **Fix:** Change `m_renderCommands` to store `RenderCommand` values (not pointers). Add a count member. `Submit` takes by value; `Draw` iterates up to count and resets it to 0.
 
@@ -33,7 +33,7 @@
 
 ### BUG-04 · VertexLayout — Rule of Three Violation (Shallow Copy → Dangling Pointer)
 - **Files:** `engine/source/graphics/VertexLayout.h`, `engine/source/render/Mesh.cpp`
-- **Status:** `[⌛]`
+- **Status:** `[✅]`
 - **What:** `VertexLayout` has a destructor (`delete[] elements`) but no copy constructor or copy assignment operator. The compiler generates shallow copies. In `Game::Init()`, `vertexLayout` is copied into `Mesh` shallowly; when `Init()` ends, `vertexLayout` destructs and deletes the shared array — leaving `m_mesh->m_vertexLayout.elements` dangling.
 - **Fix:** Add a deep copy constructor and deep copy assignment operator to `VertexLayout` that allocate a new `elements` array and copy all elements individually.
 
@@ -43,7 +43,7 @@
 
 ### BUG-05 · Mesh — No Destructor, GPU Resources Never Released
 - **File:** `engine/source/render/Mesh.h` / `Mesh.cpp`
-- **Status:** `[🚩]`
+- **Status:** `[✅]`
 - **What:** `Mesh` creates VAO, VBO, and EBO but never calls `glDeleteVertexArrays` / `glDeleteBuffers`. GPU memory leaks on destruction.
 - **Fix:** Add `~Mesh()` that calls `glDeleteVertexArrays(1, &m_VAO)`, `glDeleteBuffers(1, &m_VBO)`, and `glDeleteBuffers(1, &m_EBO)` (guard EBO with `if (m_EBO != 0)`).
 
@@ -67,7 +67,7 @@
 
 ### BUG-08 · GraphicsAPI — `&vertices` / `&indices` Passes Wrong Pointer to GPU
 - **File:** `engine/source/graphics/GraphicsAPI.cpp` — `CreateVertexBuffer()` and `CreateIndexBuffer()`
-- **Status:** `[🚩]`
+- **Status:** `[✅]`
 - **What:** `vertices` is a `const float*`. `&vertices` is a `const float**` — the address of the local stack parameter. The GPU receives the address of a stack variable, not the actual geometry data.
 - **Fix:** Change `&vertices` → `vertices` and `&indices` → `indices`.
 
@@ -103,7 +103,7 @@
 
 ### BUG-12 · RenderQueue::Submit — Silent Drop When Full
 - **File:** `engine/source/render/RenderQueue.cpp`
-- **Status:** `[⌛]`
+- **Status:** `[✅]`
 - **What:** When all 100 slots are used, `Submit()` silently discards the command with no error.
 - **Fix:** Add `std::cerr << "ERROR: RenderQueue full, command dropped\n";` (or an assert) when count reaches the limit.
 

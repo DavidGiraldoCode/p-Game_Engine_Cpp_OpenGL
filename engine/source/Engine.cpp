@@ -62,7 +62,7 @@ namespace eng
 			UpdateDeltaTime(deltaTime);
 			m_app->Update(deltaTime);
 
-			m_graphicsApi.SetClearColor(1.f, 1.f, 1.f, 1.f);
+			m_graphicsApi.SetClearColor(0.f, 0.f, 0.f, 1.f);
 			m_graphicsApi.ClearBuffers();
 
 			m_renderQueue.Draw(m_graphicsApi);

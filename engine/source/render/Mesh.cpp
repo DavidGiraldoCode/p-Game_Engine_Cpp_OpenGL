@@ -5,18 +5,18 @@ namespace eng
 {
 	Mesh::Mesh(	const VertexLayout&		layout,
 				const float*			vertices,
-				const size_t			verticesCount,
-				const uint32_t*			indices,
+				const size_t			totalFComponentsCount,
+				const unsigned int*		indices,
 				const size_t			indicesCount)
 	{
-		// TODO: do they create deep copies?
-		// The instructor does the same, but I am not sure if by using std:: objects he gets
-		// the deep copy
-		m_vertexLayout = layout;
+		// Deep copy is needed, the = operator and the copy constructor will be called
+		// Without a deep copy, layout and m_vertexlayout will point to the same memory address
+		// This assignation calls alot of things implicitly in the std::vector class, reaad Session Notes Feb 21 2026
+		m_vertexLayout = layout; 
 
 		auto& graphicsAPI = Engine::GetInstance().GetGraphicsAPI();
 
-		m_VBO = graphicsAPI.CreateVertexBuffer(vertices, verticesCount);
+		m_VBO = graphicsAPI.CreateVertexBuffer(vertices, totalFComponentsCount);
 		m_EBO = graphicsAPI.CreateIndexBuffer(indices, indicesCount);
 
 		glGenVertexArrays(1, &m_VAO);
@@ -40,26 +40,28 @@ namespace eng
 
 		}
 
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
+		// The VAP records this EBO binding, stores internally
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO); 
+		// The VAO internally 
 
-		// Unbind
-		glBindVertexArray(0);
+		// Unbinding
+		glBindVertexArray(0); // VAO is "frozen", still remembers EBO.
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); // If the EBO in unbounded before the VAO, the VAO will record 0.
 
-		m_vertexCount = verticesCount;//(verticesCount * sizeof(float)) / m_vertexLayout.stride;
+		m_vertexCount = (totalFComponentsCount * sizeof(float)) / m_vertexLayout.stride;
 		m_indexCount = indicesCount;
 	}
 
 	Mesh::Mesh(	const VertexLayout&		layout,
 				const float*			vertices,
-				const size_t			verticesCount)
+				const size_t			vertexElementSize)
 	{
-		m_vertexLayout = layout; // TODO: do they create deep copies
+		m_vertexLayout = layout;
 
 		auto& graphicsAPI = Engine::GetInstance().GetGraphicsAPI();
 
-		m_VBO = graphicsAPI.CreateVertexBuffer(vertices, verticesCount);
+		m_VBO = graphicsAPI.CreateVertexBuffer(vertices, vertexElementSize);
 
 		glGenVertexArrays(1, &m_VAO);
 
@@ -86,7 +88,7 @@ namespace eng
 		glBindVertexArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-		m_vertexCount = verticesCount;//(verticesCount * sizeof(float)) / m_vertexLayout.stride;
+		m_vertexCount = vertexElementSize;//(verticesCount * sizeof(float)) / m_vertexLayout.stride;
 
 	}
 

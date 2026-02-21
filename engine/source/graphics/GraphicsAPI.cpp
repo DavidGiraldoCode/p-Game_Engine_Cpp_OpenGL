@@ -83,27 +83,28 @@ namespace eng
 			mesh->Bind();
 	}
 
-	GLuint GraphicsAPI::CreateVertexBuffer(const float* vertices, const size_t verticesCount)
+	GLuint GraphicsAPI::CreateVertexBuffer(const float* vertices, const size_t totalFComponentsCount)
 	{
-		GLuint vbo;
+		GLuint vbo = 0;
 
 		glGenBuffers(1, &vbo);
-		glBindBuffer(GL_ARRAY_BUFFER, vbo);                        
-		// Note a commun mistake, Passing vertices as &vertices, sends the address of a stack variable
-		// to the GPU, instead of the pointer to the firts geometry data point in the array.
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * verticesCount, vertices, GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, vbo);              
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * totalFComponentsCount, vertices, GL_STATIC_DRAW);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 		return vbo;
+		// Note a commun mistake, Passing vertices as &vertices, sends the address of a stack variable
+		// to the GPU, instead of the pointer to the firts geometry data point in the array.
+		// But, passing vertices = &vertives[0], because this is the address of the first element in the array
 	}
 
-	GLuint GraphicsAPI::CreateIndexBuffer(const uint32_t* indices, const size_t indicesCount)
+	GLuint GraphicsAPI::CreateIndexBuffer(const unsigned int* indices, const size_t indicesCount)
 	{
-		GLuint ebo;
+		GLuint ebo = 0;
 
 		glGenBuffers(1, &ebo);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32_t) * indicesCount, indices, GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * indicesCount, &indices[0], GL_STATIC_DRAW);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 		return ebo;

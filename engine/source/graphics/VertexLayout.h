@@ -12,13 +12,15 @@ namespace eng
 	struct VertexElement
 	{
 		GLuint		index	= 0; // Attribute location in the shader e.g. (location = 0)
-		GLuint		size	= 0; // Number of components that attribute has e.g. (x,y) or (x,y,z,w)
-		GLuint		type	= 0; // The OpenGL type of data of the attributes e.g GL_FLOAT
+		GLint		size	= 0; // Number of components that attribute has e.g. (x,y) or (x,y,z,w)
+		GLenum		type	= 0; // The OpenGL type of data of the attributes e.g GL_FLOAT
 		size_t		offset	= 0; // How many bytes from the start of the vextex the first data point of the attribute is
 	};
 
 	/// <summary>
-	/// Container for the list of vertices layout
+	/// Container for the list of vertices layout.
+	/// Has no Move Constuctor or move assignment. 
+	/// So, it cannot be use in a STL container yet. Asi move will fall back to copy
 	/// </summary>
 	struct VertexLayout
 	{
@@ -26,10 +28,43 @@ namespace eng
 		uint32_t			elementsCount	= 0;		//
 		uint32_t			stride			= 0;		//
 		
+		VertexLayout() = default; // When declaring the variable will default to {nullptr, 0, 0}
+
+		/// <summary>
+		/// Copy constructor. Needed to create a Deep copy of the elements array
+		/// </summary>
+		VertexLayout(const VertexLayout& other)
+			:elementsCount( other.elementsCount ), stride( other.stride )
+		{
+			elements = new VertexElement[elementsCount];
+			
+			for (size_t i = 0; i < elementsCount; i++)
+				elements[i] = other.elements[i]; // Copies {index, size, type, offset} values
+		}
+
+		/// <summary>
+		/// Copy assignment operator
+		/// </summary>
+		VertexLayout& operator=(const VertexLayout& other)
+		{
+			if (this == &other) return *this;	// Checking if we are assinging this object to itself
+			delete[] elements;					// Might be nullptr, in C++, this is a no-operation, so its safe
+
+			elementsCount	= other.elementsCount;
+			stride			= other.stride;
+			elements		= new VertexElement[elementsCount];
+
+			for (size_t i = 0; i < elementsCount; i++)
+				elements[i] = other.elements[i];
+
+			return *this; // De-referencing this pointer and returning the actual object
+
+		}
+
 		~VertexLayout()
 		{
-			if(elements != nullptr)
-				delete[] elements;
+			// if(elements != nullptr) Not Necessary
+			delete[] elements;
 		}
 	};
 }

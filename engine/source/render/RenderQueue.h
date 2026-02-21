@@ -16,7 +16,7 @@ namespace eng
 	class RenderQueue
 	{
 	public:
-
+		
 		/// <summary>
 		/// 
 		/// </summary>
@@ -29,7 +29,7 @@ namespace eng
 	private:
 		static const size_t RENDER_COMMANDS_SIZE = 100;
 
-		/// Stack allocated fixed-sized array
+		/// Stack allocated fixed-sized array, no need for manual deletion
 		/// Original memeber type: std::vector<RenderCommand>
 		/// TODO: this one is tricky, because it may grow dynamically, for now, it will be stack allocated
 		RenderCommand	m_renderCommands[RENDER_COMMANDS_SIZE]	= {};

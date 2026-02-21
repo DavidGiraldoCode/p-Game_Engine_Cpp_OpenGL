@@ -21,10 +21,9 @@ bool Game::Init()
         void main()
         {
 
-            gl_Position = vec4( position.x + uOffSet.x , 
-                                position.y + uOffSet.y, 
-                                0.0, 
-                                1.0);
+            gl_Position = vec4( position.x, position.y, position.z, 1.0);
+            //gl_Position = vec4( position.x + uOffSet.x , position.y + uOffSet.y, 0.0, 1.0);
+
             colorUV = color;
         }    
 
@@ -40,8 +39,8 @@ bool Game::Init()
 
         void main()
         {
-            //FragColor = vec4(colorUV.r, colorUV.g, colorUV.b, 1.0) + uColor;
-            FragColor = vec4(uColor.r, uColor.g, uColor.b, 1.0);
+            FragColor = vec4(colorUV.r, colorUV.g, colorUV.b, 1.0);
+            //FragColor = vec4(uColor.r, uColor.g, uColor.b, 1.0);
         }
     )";
 
@@ -54,67 +53,37 @@ bool Game::Init()
 
     m_material.SetShaderProgram(shaderProgram);
 
-    // TODO: is constexpr used correctly of is it an overkill? what would be other options?
-    constexpr unsigned RECT_VERTICES_DATA_SIZE = 24;
+    const unsigned int  RECT_VERTICES_DATA_SIZE = 24, RECT_INDICES_SIZE = 6;
+    const size_t        POSITION = 0, COLOR = 1;
+    constexpr int       ELEMENTS_COUNT = 2;
 
     float rectangleVertices[RECT_VERTICES_DATA_SIZE] =
     {
         //x     y       z       R       G       B
-        0.1f,   0.1f,  0.0f,   1.0f,   0.0f,    0.0f,
-       -0.1f,   0.1f,  0.0f,   0.0f,   1.0f,    0.0f,
-       -0.1f,  -0.1f,  0.0f,   0.0f,   0.0f,    1.0f,
-        0.1f,  -0.1f,  0.0f,   1.0f,   1.0f,    0.0f
+        0.5f,   0.5f,  0.0f,   1.0f,   0.0f,    0.0f,
+       -0.5f,   0.5f,  0.0f,   0.0f,   1.0f,    0.0f,
+       -0.5f,  -0.5f,  0.0f,   0.0f,   0.0f,    1.0f,
+        0.5f,  -0.5f,  0.0f,   1.0f,   1.0f,    0.0f
     };
 
-    constexpr unsigned RECT_INDICES_SIZE = 6;
-    uint32_t rectangleIndices[RECT_INDICES_SIZE] =
+    unsigned int rectangleIndices[RECT_INDICES_SIZE] =
     {
         0, 1, 2,
         0, 2, 3
     };
 
-    eng::VertexLayout vertexLayout; // Default initialization {nullptr, 0, 0}
-    vertexLayout.elementsCount = 2;
+    eng::VertexLayout vertexLayout;
+    vertexLayout.elementsCount = ELEMENTS_COUNT;
+    vertexLayout.elements = new eng::VertexElement[ELEMENTS_COUNT]{};
 
-    // NOTE:
-    /**
-    In the original, the instructor uses
-    vertexLayout.elements.push_back({...VertexElement params.. })
-    */
-    // My try with `new`
-    //vertexLayout.elements = new eng::VertexElement[vertexLayout.elementsCount]{}; // All Vertex Elements are default-initialized {0,0,0,0}
+    //                                    index  size  type           offset
+    vertexLayout.elements[POSITION] = {     0,    3,  GL_FLOAT,         0          };
+    vertexLayout.elements[COLOR]    = {     1,    3,  GL_FLOAT, sizeof(float) * 3  };
 
-    eng::VertexElement elements[2] = {};
+    vertexLayout.stride             = sizeof(float) * (vertexLayout.elements[0].size + vertexLayout.elements[1].size);
+    size_t totalFComponentsCount    = RECT_VERTICES_DATA_SIZE;
 
-    constexpr size_t POSITION = 0, COLOR = 1;
-
-    //vertexLayout.
-    elements[POSITION] =
-    {
-        0,
-        3,
-        GL_FLOAT,
-        0
-    };
-
-    //vertexLayout.
-    elements[COLOR] =
-    {
-        1,
-        3,
-        GL_FLOAT,
-        sizeof(float) * 3
-    };
-
-    // I create the array in the stack ans pass the ref to the first item
-    vertexLayout.elements = &elements[0];
-    vertexLayout.stride = sizeof(float) * (vertexLayout.elements[POSITION].size + vertexLayout.elements[COLOR].size);
-
-    // Original std::make_unique<eng::Mesh>(vertexLayout, rectangleVertices, rectangleIndices)
-    m_mesh = new eng::Mesh(vertexLayout, &rectangleVertices[0], (size_t)4, &rectangleIndices[0], (size_t)6);
-
-    // concerning the 'new' option
-    //delete[] vertexLayout.elements;
+    m_mesh = new eng::Mesh(vertexLayout, &rectangleVertices[0], totalFComponentsCount, &rectangleIndices[0], RECT_INDICES_SIZE);
 
 	return true;
 }
@@ -127,12 +96,12 @@ void Game::Update(float deltaTime)
 	if(inputManager.IsKeyPressed(GLFW_KEY_A))
 		std::cout << "Key[A]: Pressed! \n";
 
-    //eng::RenderCommand command;
-    //command.material    = &m_material;
-    //command.mesh        = m_mesh; // original m_mesh.get() to get from std::unique_ptr<eng::Mesh>
+    eng::RenderCommand command;
+    command.material    = &m_material;
+    command.mesh        = m_mesh; // original m_mesh.get() to get from std::unique_ptr<eng::Mesh>
 
-    //auto& renderQueue = Engine::GetInstance().GetRenderQueue();
-    //renderQueue.Submit(command);
+    auto& renderQueue = Engine::GetInstance().GetRenderQueue();
+    renderQueue.Submit(command);
 }
 
 void Game::Destroy()

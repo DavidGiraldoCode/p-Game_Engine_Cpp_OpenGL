@@ -30,12 +30,17 @@ namespace eng
 
 		//////////////////////////////////////////////////////////////////////
 		// Buffer creation
-		//////////////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////	
+			
+		/// <summary>
+		/// Get the pointer to the first element of the array of float components.
+		/// And the total float components to compute the total size in bytes
+		/// Original parameter: const std::vector<float>& vertices
+		/// </summary>
+		GLuint			CreateVertexBuffer(const float* vertices, const size_t totalFComponentsCount);
 
-		// Original parameter: const std::vector<float>& vertices
-		GLuint			CreateVertexBuffer(const float* vertices, const size_t verticesCount);
 		// Original parameter: const std::vector<uint32_t>& indices
-		GLuint			CreateIndexBuffer(const uint32_t* indices, const size_t indicesCount);
+		GLuint			CreateIndexBuffer(const unsigned int* indices, const size_t indicesCount);
 		
 		//////////////////////////////////////////////////////////////////////
 		// Buffer binding
