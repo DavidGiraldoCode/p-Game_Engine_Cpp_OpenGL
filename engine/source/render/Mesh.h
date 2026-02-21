@@ -7,6 +7,12 @@ namespace eng
 	class Mesh
 	{
 	public:
+		/// <summary>
+		/// Original parameters:
+		/// const VertexLayout&	layout
+		/// const std::vector<float>& vertices
+		/// const std::vector<float>& indices
+		/// </summary>
 		Mesh(	const VertexLayout&		layout, 
 				const float*			vertices, 
 				const size_t			verticesCount,
@@ -16,9 +22,12 @@ namespace eng
 		Mesh(	const VertexLayout&		layout, 
 				const float*			vertices, 
 				const size_t			verticesCount);
+		
 		// Disable copy and assignment
 		Mesh(const Mesh&) = delete;
 		Mesh& operator= (const Mesh&) = delete;
+
+		~Mesh();
 
 		void Bind();
 		void Draw();
@@ -32,5 +41,8 @@ namespace eng
 		
 		size_t			m_vertexCount	 = 0;
 		size_t			m_indexCount	 = 0;
-};
+		
+		void DeleteBuffers(); // Only the destructor can call this
+
+	};
 }

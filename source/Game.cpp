@@ -49,9 +49,12 @@ bool Game::Init()
 
     auto& graphicsApi = Engine::GetInstance().GetGraphicsAPI();
 
+    //original auto
     eng::ShaderProgram* shaderProgram = graphicsApi.CreateShaderProgram(vertexShaderSource, fragmentShaderSource);
+
     m_material.SetShaderProgram(shaderProgram);
 
+    // TODO: is constexpr used correctly of is it an overkill? what would be other options?
     constexpr unsigned RECT_VERTICES_DATA_SIZE = 24;
 
     float rectangleVertices[RECT_VERTICES_DATA_SIZE] =
@@ -70,29 +73,48 @@ bool Game::Init()
         0, 2, 3
     };
 
-    eng::VertexLayout vertexLayout;
+    eng::VertexLayout vertexLayout; // Default initialization {nullptr, 0, 0}
     vertexLayout.elementsCount = 2;
-    vertexLayout.elements = new eng::VertexElement[vertexLayout.elementsCount]{};
+
+    // NOTE:
+    /**
+    In the original, the instructor uses
+    vertexLayout.elements.push_back({...VertexElement params.. })
+    */
+    // My try with `new`
+    //vertexLayout.elements = new eng::VertexElement[vertexLayout.elementsCount]{}; // All Vertex Elements are default-initialized {0,0,0,0}
+
+    eng::VertexElement elements[2] = {};
 
     constexpr size_t POSITION = 0, COLOR = 1;
 
-    vertexLayout.elements[POSITION] =
+    //vertexLayout.
+    elements[POSITION] =
     {
         0,
         3,
         GL_FLOAT,
         0
     };
-    vertexLayout.elements[COLOR] =
+
+    //vertexLayout.
+    elements[COLOR] =
     {
         1,
         3,
         GL_FLOAT,
         sizeof(float) * 3
     };
+
+    // I create the array in the stack ans pass the ref to the first item
+    vertexLayout.elements = &elements[0];
     vertexLayout.stride = sizeof(float) * (vertexLayout.elements[POSITION].size + vertexLayout.elements[COLOR].size);
 
+    // Original std::make_unique<eng::Mesh>(vertexLayout, rectangleVertices, rectangleIndices)
     m_mesh = new eng::Mesh(vertexLayout, &rectangleVertices[0], (size_t)4, &rectangleIndices[0], (size_t)6);
+
+    // concerning the 'new' option
+    //delete[] vertexLayout.elements;
 
 	return true;
 }
@@ -105,15 +127,16 @@ void Game::Update(float deltaTime)
 	if(inputManager.IsKeyPressed(GLFW_KEY_A))
 		std::cout << "Key[A]: Pressed! \n";
 
-    eng::RenderCommand command;
-    command.material = &m_material;
-    command.mesh = m_mesh;
+    //eng::RenderCommand command;
+    //command.material    = &m_material;
+    //command.mesh        = m_mesh; // original m_mesh.get() to get from std::unique_ptr<eng::Mesh>
 
-    auto& renderQueue = Engine::GetInstance().GetRenderQueue();
-    renderQueue.Submit(command);
+    //auto& renderQueue = Engine::GetInstance().GetRenderQueue();
+    //renderQueue.Submit(command);
 }
 
 void Game::Destroy()
 {
-
+    delete m_mesh;
+    m_mesh = nullptr;
 }

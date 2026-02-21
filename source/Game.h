@@ -15,5 +15,7 @@ public:
 
 private:
 	eng::Material	m_material;
-	eng::Mesh*		m_mesh;
+	
+	// Always initialize pointers to nullptr. If a process fails early, this member contains garbage.
+	eng::Mesh*		m_mesh			= nullptr;		// original std::unique_ptr<eng::Mesh>
 };

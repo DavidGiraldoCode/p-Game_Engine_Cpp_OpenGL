@@ -3,13 +3,14 @@
 
 namespace eng
 {
-
+	/// <summary>
+	/// Takes in a pointer where the ShaderProgram is, and assings it to the Material
+	/// Original parameter type: const std::shared_ptr<ShaderProgram>&
+	/// </summary>
 	void Material::SetShaderProgram(ShaderProgram* shaderProgram)
 	{
-		delete m_shaderProgram;
-		m_shaderProgram = shaderProgram;
-		delete shaderProgram;
-		shaderProgram = nullptr;
+		delete m_shaderProgram;				// Delete any old one
+		m_shaderProgram = shaderProgram;	// Takes ownership of the memory
 	}
 
 	void Material::SetMaterialParameters(const string& paramName, float value)
@@ -29,9 +30,9 @@ namespace eng
 		}
 	}
 
-	/*Material::~Material()
+	Material::~Material()
 	{
 		delete m_shaderProgram;
 		m_shaderProgram = nullptr;
-	}*/
+	}
 }

@@ -71,18 +71,20 @@ namespace eng
 		/// </summary>
 		void SetApplication(Application* app);	// ownership transfer
 
-		Application* GetApplication() const;	// non-owning access
 
-		InputManager& GetInputManager(); // Const Engine, read-only access
+		//////////////////////////////////////////////////////////////
+		// Getters to main classes
+		//////////////////////////////////////////////////////////////
 
-		GraphicsAPI& GetGraphicsAPI();
-
-		RenderQueue& GetRenderQueue();
+		Application*		GetApplication() const;	// non-owning access
+		InputManager&		GetInputManager(); // Const Engine, read-only access
+		GraphicsAPI&		GetGraphicsAPI();
+		RenderQueue&		GetRenderQueue();
 	
 	private:
 		std::chrono::steady_clock::time_point m_lastTimePoint;
 		
-		Application*	m_app			= nullptr;
+		Application*	m_app			= nullptr; // original member type: std::unique_ptr<Application>
 		GLFWwindow*		m_window		= nullptr;
 		
 		// The Engine will call InputManger() default constructor because its a friend class

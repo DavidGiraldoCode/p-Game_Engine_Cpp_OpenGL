@@ -13,13 +13,15 @@ namespace eng
 	{
 	public:
 		//Material() = delete;
-
+		~Material();
+		// original parameter: const std::shared_ptr<ShaderProgram>& shaderProgram
 		void SetShaderProgram(ShaderProgram* shaderProgram);
 		void SetMaterialParameters(const string& paramName, float value);
 		void Bind();
 
 	private:
-		ShaderProgram* m_shaderProgram				= nullptr;
-		unordered_map<string, float> m_parameters	= {};
+		// original std::shared_ptr<ShaderProgram>
+		ShaderProgram*					m_shaderProgram		= nullptr;
+		unordered_map<string, float>	m_parameters		= {};
 	};
 }

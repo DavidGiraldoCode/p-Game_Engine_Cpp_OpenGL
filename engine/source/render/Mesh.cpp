@@ -9,7 +9,10 @@ namespace eng
 				const uint32_t*			indices,
 				const size_t			indicesCount)
 	{
-		m_vertexLayout = layout; // TODO: do they create deep copies
+		// TODO: do they create deep copies?
+		// The instructor does the same, but I am not sure if by using std:: objects he gets
+		// the deep copy
+		m_vertexLayout = layout;
 
 		auto& graphicsAPI = Engine::GetInstance().GetGraphicsAPI();
 
@@ -31,7 +34,7 @@ namespace eng
 									layout.elements[i].type,
 									GL_FALSE,
 									layout.stride,
-									(void*)(uint32_t)layout.elements[i].offset);
+									(void*) layout.elements[i].offset);
 
 			glEnableVertexAttribArray(layout.elements[i].index);
 
@@ -73,7 +76,7 @@ namespace eng
 				layout.elements[i].type,
 				GL_FALSE,
 				layout.stride,
-				(void*)(uint32_t)layout.elements[i].offset);
+				(void*) layout.elements[i].offset);
 
 			glEnableVertexAttribArray(layout.elements[i].index);
 
@@ -87,6 +90,11 @@ namespace eng
 
 	}
 
+	Mesh::~Mesh()
+	{
+		DeleteBuffers();
+	}
+
 	void Mesh::Bind()
 	{
 		glBindVertexArray(m_VAO);
@@ -98,5 +106,13 @@ namespace eng
 			glDrawElements(GL_TRIANGLES, m_indexCount, GL_UNSIGNED_INT, 0);
 		else
 			glDrawArrays(GL_TRIANGLES, 0, m_vertexCount);
+	}
+
+	void Mesh::DeleteBuffers()
+	{
+		glDeleteVertexArrays(1, &m_VAO);
+		glDeleteBuffers(1, &m_VBO);
+		if (m_EBO != 0)
+			glDeleteBuffers(1, &m_EBO);
 	}
 }
