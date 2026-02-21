@@ -7,9 +7,10 @@ using std::string;
 
 namespace eng
 {
-	// Forward declaration
+	// Forward declaration for pointers
 	class ShaderProgram; 
 	class Material;
+	class Mesh;
 
 	/// <summary>
 	/// 
@@ -22,14 +23,40 @@ namespace eng
 		
 		/// <summary>
 		/// Creates a ShaderProgram pointer on the heap. The caller must manage this resource manually
-		/// original: std::shared_ptr<ShaderProgram> instead of ShaderProgram*
+		/// original return type: std::shared_ptr<ShaderProgram>
 		/// </summary>
 		ShaderProgram*	CreateShaderProgram(const string& vertexSourceCode, const string& fragmentSourceCode);
-		void			BindShaderProgram(ShaderProgram& shaderProgram); // original ShaderProgram*
-		void			BindMaterial(Material& material); //original Material* 
+		
+
+		//////////////////////////////////////////////////////////////////////
+		// Buffer creation
+		//////////////////////////////////////////////////////////////////////	
+			
+		/// <summary>
+		/// Get the pointer to the first element of the array of float components.
+		/// And the total float components to compute the total size in bytes
+		/// Original parameter: const std::vector<float>& vertices
+		/// </summary>
+		GLuint			CreateVertexBuffer(const float* vertices, const size_t totalFComponentsCount);
+
+		// Original parameter: const std::vector<uint32_t>& indices
+		GLuint			CreateIndexBuffer(const unsigned int* indices, const size_t indicesCount);
+		
+		//////////////////////////////////////////////////////////////////////
+		// Buffer binding
+		//////////////////////////////////////////////////////////////////////
+		void			BindShaderProgram(ShaderProgram* shaderProgram); // original parameter type: ShaderProgram*
+		void			BindMaterial(Material* material); //original parameter type: Material* 
+		void			BindMesh(Mesh* mesh); //original parameter type: Mesh*
+		
+		void			SetClearColor(const float r, const float g, const float b, const float a);
+		void			ClearBuffers();
+		void			DrawMesh(Mesh* mesh);
 
 	private:
 		bool			IsShaderCompilationSuccessful(const GLuint shader) const;
 		bool			IsProgramLinkingSuccessful(const GLuint program) const;
+		void			DeletePrograms(const GLuint vertShader, const GLuint fragShader, const GLuint shaderProgram);
+		void			DeletePrograms(const GLuint vertShader, const GLuint fragShader);
 	};
 }

@@ -11,23 +11,21 @@ namespace eng
 	class ShaderProgram
 	{
 	public: 
-		/// <summary>
-		/// This is an explicit constructor that does not allow for implicit cast from GLuint to ShaderProgram.
-		/// Therefore, only by explicitly creating a GLuint handler a ShaderProgram instance can be instantiated.
-		/// </summary>
-		explicit ShaderProgram(GLuint programId);
-
 		// Disable default means that the a user will not be able to create a ShaderProgram by just declaring an instance.
 		// Calling `ShaderPragram sp; will yield an error. And assinging to an `int` will not work. This ensures the program id
 		// comes from a valid OpenGL action on the GPU.
 		ShaderProgram() = delete;
 		
-		// and copy constructor
+		// Disable copy constructor and operator
 		ShaderProgram(const ShaderProgram&) = delete;
-
+		ShaderProgram& operator= (const ShaderProgram&) = delete;
+		
+		/// <summary>
+		/// This is an explicit constructor that does not allow for implicit cast from GLuint to ShaderProgram.
+		/// Therefore, only by explicitly creating a GLuint handler a ShaderProgram instance can be instantiated.
+		/// </summary>
+		explicit ShaderProgram(GLuint programId);
 		~ShaderProgram();
-
-		ShaderProgram& operator = (const ShaderProgram&) = delete;
 		
 		void Bind() const;
 		void SetUniformFloat(const string& uniformName, float value);
@@ -39,6 +37,6 @@ namespace eng
 
 	private:
 		GLuint							m_shaderProgramId		= 0;
-		unordered_map<string, GLint>	m_uniformLocationCache	= {};
+		unordered_map<string, GLint>	m_uniformLocationCache	= {}; // original does not initialiaze
 	};
 }
